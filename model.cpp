@@ -34,8 +34,6 @@ using namespace boost::numeric::odeint;
 
 // establish typedef
 typedef boost::array<double,7> state_type;
-//typedef boost::numeric::ublas::vector< double > vector_type;
-//typedef boost::numeric::ublas::matrix< double > matrix_type;
 
 // establish the necessary constants
 const double pi = boost::math::constants::pi<double>();
@@ -85,20 +83,40 @@ struct sirmodel_test
     double temp = parameters[0]*sin((2.0*pi/365.0)*(t))+parameters[1];
     double K = carrying_capacity(temp,29.0,0.05,20000);
 
-    dxdt[0] = (EFD(temp)*pEA(temp)*MDR(temp))*(x[0]+x[1]+x[2])*(1-((x[0]+x[1]+x[2])/K))-
-    (a(temp)*pMI(temp)*x[5]/(x[3]+x[4]+x[5]+x[6])+mu(temp))*x[0];
+    if(fmod(t, 1.0) == 0)
+    {
+      dxdt[0] = (EFD(temp)*pEA(temp)*MDR(temp))*(x[0]+x[1]+x[2])*(1-((x[0]+x[1]+x[2])/K))-
+        (a(temp)*pMI(temp)*(x[5]+5)/(x[3]+x[4]+5+x[5]+x[6])+mu(temp))*x[0];
 
-    dxdt[1] = (a(temp)*pMI(temp)*x[5]/(x[3]+x[4]+x[5]+x[6]))*x[0]-(PDR(temp)+mu(temp))*x[1];
+      dxdt[1] = (a(temp)*pMI(temp)*(x[5]+5)/(x[3]+x[4]+x[5]+5+x[6]))*x[0]-(PDR(temp)+mu(temp))*x[1];
 
-    dxdt[2] = PDR(temp)*x[1]-mu(temp)*x[2];
+      dxdt[2] = PDR(temp)*x[1]-mu(temp)*x[2];
 
-    dxdt[3] = -a(temp)*b(temp)*(x[2]/(x[0]+x[1]+x[2]))*x[3];
+      dxdt[3] = -a(temp)*b(temp)*(x[2]/(x[0]+x[1]+x[2]))*x[3];
 
-    dxdt[4] = a(temp)*b(temp)*(x[2]/(x[0]+x[1]+x[2]))*x[3]-(1.0/6)*x[4];
+      dxdt[4] = a(temp)*b(temp)*(x[2]/(x[0]+x[1]+x[2]))*x[3]-(1.0/6)*x[4];
 
-    dxdt[5] = (1.0/6.0)*x[4]-(1.0/6.0)*x[5];
+      dxdt[5] = (1.0/6.0)*x[4]-(1.0/6.0)*(x[5]+5);
 
-    dxdt[6] = (1.0/6.0)*x[5];
+      dxdt[6] = (1.0/6.0)*(x[5]+5);
+    }
+    else
+    {
+      dxdt[0] = (EFD(temp)*pEA(temp)*MDR(temp))*(x[0]+x[1]+x[2])*(1-((x[0]+x[1]+x[2])/K))-
+        (a(temp)*pMI(temp)*x[5]/(x[3]+x[4]+x[5]+x[6])+mu(temp))*x[0];
+
+      dxdt[1] = (a(temp)*pMI(temp)*x[5]/(x[3]+x[4]+x[5]+x[6]))*x[0]-(PDR(temp)+mu(temp))*x[1];
+
+      dxdt[2] = PDR(temp)*x[1]-mu(temp)*x[2];
+
+      dxdt[3] = -a(temp)*b(temp)*(x[2]/(x[0]+x[1]+x[2]))*x[3];
+
+      dxdt[4] = a(temp)*b(temp)*(x[2]/(x[0]+x[1]+x[2]))*x[3]-(1.0/6)*x[4];
+
+      dxdt[5] = (1.0/6.0)*x[4]-(1.0/6.0)*x[5];
+
+      dxdt[6] = (1.0/6.0)*x[5];
+    }
   }
 };
 
@@ -110,6 +128,14 @@ struct stream_writer{
     if(fabs(t-364.99)<1e-3){
       m_out<<x[6]<<'\n';
     }
+  }
+};
+
+struct stream_writer_trajectory{
+  std::ostream& m_out;
+  stream_writer_trajectory( std::ostream& out) : m_out( out) {}
+  void operator()( const state_type &x, const double t ){
+    m_out << x[5] << '\n';
   }
 };
 
@@ -128,6 +154,26 @@ void output_display(const state_type &x, const double t){
 void output_display_all(const state_type &x, const double t){
   cout << x[6] << '\n';
 }
+
+// This is for a single trajectory. Let me know if you need to work with this.
+// int main()
+// {
+//   runge_kutta4< state_type > stepper;
+//   ofstream fout("trajectory_265_8.txt");
+//   vector<double> parms(2);
+//
+//   // specify specific temperature regime
+//   parms[0] = 8.0;
+//   parms[1] = 26.5;
+//
+//   double M_initial = carrying_capacity(parms[1],29.0,0.05,20000);
+//   state_type x = {0.985*M_initial,0.0,0.015*M_initial,9975.0,0.0,25.0,0.0};
+//   integrate_const(stepper, sirmodel(parms), x, 0.00, 365.00, 0.01,stream_writer_trajectory( fout ));
+//
+//   return 0;
+// }
+//
+
 int main(int argc, char*argv[]){
 
   vector<double> parms(2);
@@ -146,9 +192,6 @@ int main(int argc, char*argv[]){
     amplitude[ii] = start_amplitude;
   }
 
-  //typedef rosenbrock4< double > stepper_type;
-  //typedef rosenbrock4_controller< stepper_type > controlled_stepper_type;
-  //typedef rosenbrock4_dense_output< controlled_stepper_type > dense_output_type;
   runge_kutta4< state_type > stepper;
 
   int index = atoi(argv[1]) - 1;
