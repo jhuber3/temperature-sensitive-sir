@@ -1,6 +1,7 @@
 # Specify the version being used
 cmake_minimum_required (VERSION 3.2.2)
 set(CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_FLAGS "-Ofast")
 
 # Set the options for this project
 project(CitySpecificModel CXX)

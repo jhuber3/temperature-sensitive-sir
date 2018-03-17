@@ -21,6 +21,7 @@ double inverted_quadratic(double x, double c, double T0, double Tm);
 // mosquito. Mordecai et al used a Briere function to model this parameter.
 // For more documentation, see the Briere function.
 double a(double temp);
+double a(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the probability of mosquito
 // infectiousness. This is defined as the probability that a mosquito infected
@@ -28,6 +29,7 @@ double a(double temp);
 // Mordecai et al used a Briere function to model this parameter.
 // For more documentation, see the Briere function.
 double b(double temp);
+double b(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the probability of mosquito
 // infection. This is defined as the probability that a mosquito fed on
@@ -35,34 +37,40 @@ double b(double temp);
 // Mordecai et al used a Briere function to model this parameter.
 // For more documentation, see the Briere function.
 double pMI(double temp);
+double pMI(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the fecundity rate. This is
 // defined as the number of eggs laid per female per day.
 // Mordecai et al used a Briere function to model this parameter.
 // For more documentation, see the Briere function.
 double EFD(double temp);
+double EFD(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the probabilty of egg-to-adult
 // survival. Mordecai et al used a quadratic function to model this parameter.
 // For more docume ntation, see the quadratic function.
 double pEA(double temp);
+double pEA(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the mosquito development rate.
 // Mordecai et al used a Briere funtion to model this parameter.
 // For more documentation, see the Briere function.
 double MDR(double temp);
+double MDR(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the mosquito mortality rate.
 // Originally, Mordecai et al provided a quadratic fit for the adult lifespan
 // parameter. This was inverted to arrive at a mortality rate with units (1/day)
 // For more documentation, see the inverted quadratic function.
 double mu(double temp);
+double mu(double temp, std::vector<double> parms);
 
 // This function implements the model fit for the parasite development rate.
 // This is often referred to as the extrinsic incubation period (EIP).
 // Mordecai et al used a Briere function to model this parameter.
 // For more documentation, see the Briere function.
 double PDR(double temp);
+double PDR(double temp, std::vector<double> parms);
 
 // This function implements the carrying capacity for the mosquito population
 // using a modified Arrhenius equation. Documentation for this model fit can be
@@ -71,3 +79,5 @@ double PDR(double temp);
 // maximized. EA is the activation energy. N is the size of the maximum carrying
 // capacity. temp is the value of the temperature to be inputted.
 double carrying_capacity(double temp, double T0, double EA, double N);
+double carrying_capacity(double temp, double T0, double EA, double N,
+std::vector<double> EFD_parms, std::vector<double> pEA_parms, std::vector<double> MDR_parms, std::vector<double> mu_parms);
