@@ -14,7 +14,8 @@ This is the implementation of the seasonality/temperature-sensitive SEI-SEIR mod
 3. Ensure that the g++ compiler is intalled by checking `which gcc`. To run the model, you should have gcc 4.9.2. To confirm that the proper version is installed, run `gcc --version`. If it is not, install it.
 
 ## Building
-If you have done the above, you are set to compile the code. Check to see that you are in the home directory by running `pwd`. Then, do the following:
+
+Enter into the EpidemicIndices_StartTemp/ or FinalEpidemicSize/ folders. If you have done the above, you are set to compile the code. Check to see that you are in the home directory by running `pwd`. Then, do the following:
 ```
 cd build
 cmake ..
