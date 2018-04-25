@@ -297,48 +297,46 @@ int main(int argc, char* argv[]){
   uncertainty_reader.close();
 
   runge_kutta4< state_type > stepper;
-  string filepath = "./output/Range1040/output_";
+  string filepath = "./output/Range1040/output.txt";
   std::ostringstream strs;
-  // int index = atoi(argv[1]) - 1;
-  // string filename = filepath + std::to_string(index) + ".txt";
-  // ofstream fout(filename);
+  int index = atoi(argv[1]) - 1;
 
+
+  // This is set up to run for temperatures 10-40 degrees C. To run from 20-30 degrees C,
+  // you will need to change the temperature range to 101, start_temp, and
+  // double temp = temperature_curve(t,start_temp,2*pi/365,15.0,25.0); to
+  // double temp = temperature_curve(t,start_temp,2*pi/365,5.0,25.0);
   int temperature_range = 301;
-
+  ofstream fout(filename);
   for(int ii = 0; ii < temperature_range; ii++){
     double start_temp = 10.0 + 0.1*ii;
-    strs << start_temp;
-    string file_starttemp = strs.str();
-    strs.str("");
-    string filename = filepath + file_starttemp + ".txt";
-    ofstream fout(filename);
     double timestep = 0.01;
     double M_initial = carrying_capacity(start_temp,29.0,0.05,20000,timestep);
     state_type x = {0.985*M_initial,0.0,0.015*M_initial,9999.0,0.0,1.0,0.0};
-    // double final_epidemicsize = 0.0;
-    // double epidemic_length = 0.0;
-    // double max_infected = 0.0;
-    integrate_const(stepper, sirmodel(start_temp, timestep),  x, 0.00, 365.00, 0.01,stream_writer(fout));
-
-    //integrate_const(stepper, sirmodel(start_temp),  x, 0.00, 365.00, 0.01,compute_metrics(max_infected, epidemic_length, final_epidemicsize));
-
-    // integrate_const(stepper,  sirmodel_uncertainty(start_temp, EFD_uncertainty[index], pEA_uncertainty[index],
-    //   MDR_uncertainty[index], a_uncertainty[index], pMI_uncertainty[index],
-    //   mu_uncertainty[index], PDR_uncertainty[index], b_uncertainty[index],timestep),
-    // x, 0.0, 365.0, timestep, compute_metrics(max_infected, epidemic_length, final_epidemicsize));
-    // fout << final_epidemicsize << " " << max_infected << " " << epidemic_length << std::endl;
-    fout.close();
+    double final_epidemicsize = 0.0;
+    double epidemic_length = 0.0;
+    double max_infected = 0.0;
+    integrate_const(stepper, sirmodel(start_temp, timestep),  x, 0.00, 365.00, 0.01,compute_metrics(max_infected, epidemic_length, final_epidemicsize));
+    fout << final_epidemicsize << " " << max_infected << " " << epidemic_length << std::endl;
   }
-  //fout.close();
+  fout.close();
 
-  // ofstream fout("test.txt");
-  // double M_initial = carrying_capacity(20.0,29.0,0.05,20000);
-  // state_type x = {0.985*M_initial,0.0,0.015*M_initial,9999.0,0.0,1.0,0.0};
-  // //state_type x = {0.98*M_initial,0.0,0.02*M_initial,9944.0,0.0,56.0,0.0};
-  //
-  // integrate_const(stepper, sirmodel(20.0),  x, 0.00, 365.00, 0.01,stream_writer(fout));
-  //
-  // fout.close();
+
+  filepath = "./output/Range1040/uncertainty_" + std::to_string(index) + ".txt";
+  fout.open(filename);
+  for(int ii = 0; ii < tempeature_range; ii++)
+  {
+    double start_temp = 10.0 + 0.1 * ii;
+    double timestep = 0.01;
+    integrate_const(stepper,  sirmodel_uncertainty(start_temp, EFD_uncertainty[index], pEA_uncertainty[index],
+      MDR_uncertainty[index], a_uncertainty[index], pMI_uncertainty[index],
+      mu_uncertainty[index], PDR_uncertainty[index], b_uncertainty[index],timestep),
+    x, 0.0, 365.0, timestep, compute_metrics(max_infected, epidemic_length, final_epidemicsize));
+    fout << final_epidemicsize << " " << max_infected << " " << epidemic_length << std::endl;
+
+  }
+  fout.close();
+
   return 0;
 }
 

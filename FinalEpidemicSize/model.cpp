@@ -369,6 +369,8 @@ int main(int argc, char*argv[]){
 
   runge_kutta4< state_type > stepper;
 
+  // RUN THIS TO GENERATE FINAL EPIDEMIC SIZE ASSUMING MEAN PARAMETERIZATION
+  // MATCH INITIAL CONDITIONS AND CARRYING CAPACITY TO REFLECT STARTING TEMPERATURE
   // int index = atoi(argv[1]) - 1;
   // parms[1] = oscillation_temps[index];
   // string path = "output/uncertainty/output_";
@@ -389,24 +391,25 @@ int main(int argc, char*argv[]){
   //   integrate_const(stepper, sirmodel_starttemp(parms, parms[1], timestep), x, 0.00, 365.00, timestep,stream_writer( fout ));
   // }
 
+  // RUN THIS TO GENERATE CONSTANT TRAJECTORIES UNDER CONSTANT TEMPERATURE
+  // int index = atoi(argv[1]) - 1;
+  // string path = "output/constant_temp/output_";
+  // std::ostringstream strs;
+  // strs << index;
+  // string file_index = strs.str();
+  // strs.str("");
+  // string filename = path + file_index + ".txt";
+  // ofstream fout (filename);
+  // double timestep = 0.01;
+  // parms[1] = oscillation_temps[index];
+  // double M_initial = carrying_capacity(parms[1],29.0,0.05,20000,timestep);
+  // std::cout << M_initial << std::endl;
+  // state_type x = {0.985*M_initial,0.0,0.015*M_initial,9999.0,0.0,1.0,0.0};
+  // parms[0] = 0;
+  // std::cout << parms[1] << std::endl;
+  // integrate_const(stepper, sirmodel(parms, timestep), x, 0.00, 365.00, timestep,stream_writer_trajectory( fout ));
 
-  int index = atoi(argv[1]) - 1;
-  string path = "output/constant_temp/output_";
-  std::ostringstream strs;
-  strs << index;
-  string file_index = strs.str();
-  strs.str("");
-  string filename = path + file_index + ".txt";
-  ofstream fout (filename);
-  double timestep = 0.01;
-  parms[1] = oscillation_temps[index];
-  double M_initial = carrying_capacity(parms[1],29.0,0.05,20000,timestep);
-  std::cout << M_initial << std::endl;
-  state_type x = {0.985*M_initial,0.0,0.015*M_initial,9999.0,0.0,1.0,0.0};
-  parms[0] = 0;
-  std::cout << parms[1] << std::endl;
-  integrate_const(stepper, sirmodel(parms, timestep), x, 0.00, 365.00, timestep,stream_writer_trajectory( fout ));
-
+  // RUN THIS TO GENERATE THE UNCERTAINTY IN THE FINAL EPIDEMIC SIZE
   // for(int ii = 0; ii < oscillation_temps.size(); ii++)
   // {
   //   for(int jj = 0; jj < amplitude.size(); jj++)
