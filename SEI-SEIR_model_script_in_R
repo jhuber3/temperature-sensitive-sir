@@ -21,7 +21,7 @@ seiseir_model <- function(t, state, parameters) {
 
 seiseir_constant_model <- function(t, state, parameters) {
   with(as.list(c(state,parameters)), {
-    dM1 <- (EFD(temp)*pEA(temp)*MDR(temp))*(M1+M2+M3)*(1-((M1+M2+M3)/K(temp)))-(a(temp)*pMI(temp)*I/(S+E+I+R)+mu(temp))*M1
+    dM1 <- (EFD(temp)*pEA(temp)*MDR(temp)*mu(temp)^(-1))*(M1+M2+M3)*(1-((M1+M2+M3)/K(temp)))-(a(temp)*pMI(temp)*I/(S+E+I+R)+mu(temp))*M1
     dM2 <- (a(temp)*pMI(temp)*I/(S+E+I+R))*M1-(PDR(temp)+mu(temp))*M2
     dM3 <- PDR(temp)*M2-mu(temp)*M3
     dS <- -a(temp)*b(temp)*(M3/(M1+M2+M3+0.001))*S
