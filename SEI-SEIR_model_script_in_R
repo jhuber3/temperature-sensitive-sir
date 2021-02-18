@@ -11,8 +11,8 @@ seiseir_model <- function(t, state, parameters) {
     dM1 <- (EFD(temp[t])*pEA(temp[t])*MDR(temp[t])*mu(temp[t])^(-1))*(M1+M2+M3)*(1-((M1+M2+M3)/K(temp[t])))-(a(temp[t])*pMI(temp[t])*I/(S+E+I+R)+mu(temp[t]))*M1
     dM2 <- (a(temp[t])*pMI(temp[t])*I/(S+E+I+R))*M1-(PDR(temp[t])+mu(temp[t]))*M2
     dM3 <- PDR(temp[t])*M2-mu(temp[t])*M3
-    dS <- -a(temp[t])*b(temp[t])*(M3/(M1+M2+M3+0.001))*S
-    dE <- a(temp[t])*b(temp[t])*(M3/(M1+M2+M3+0.001))*S-(1.0/5.9)*E
+    dS <- -a(temp[t])*b(temp[t])*(M3/(S+E+I+R))*S
+    dE <- a(temp[t])*b(temp[t])*(M3/(S+E+I+R))*S-(1.0/5.9)*E
     dI <- (1.0/5.9)*E-(1.0/5.0)*I
     dR <- (1.0/5.0)*I
     list(c(dM1, dM2, dM3, dS, dE, dI, dR))
@@ -24,8 +24,8 @@ seiseir_constant_model <- function(t, state, parameters) {
     dM1 <- (EFD(temp)*pEA(temp)*MDR(temp)*mu(temp)^(-1))*(M1+M2+M3)*(1-((M1+M2+M3)/K(temp)))-(a(temp)*pMI(temp)*I/(S+E+I+R)+mu(temp))*M1
     dM2 <- (a(temp)*pMI(temp)*I/(S+E+I+R))*M1-(PDR(temp)+mu(temp))*M2
     dM3 <- PDR(temp)*M2-mu(temp)*M3
-    dS <- -a(temp)*b(temp)*(M3/(M1+M2+M3+0.001))*S
-    dE <- a(temp)*b(temp)*(M3/(M1+M2+M3+0.001))*S-(1.0/5.9)*E
+    dS <- -a(temp)*b(temp)*(M3/(S+E+I+R))*S
+    dE <- a(temp)*b(temp)*(M3/(S+E+I+R))*S-(1.0/5.9)*E
     dI <- (1.0/5.9)*E-(1.0/5.0)*I
     dR <- (1.0/5.0)*I
     list(c(dM1, dM2, dM3, dS, dE, dI, dR))
